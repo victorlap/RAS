@@ -1,0 +1,134 @@
+grammar nl.utwente.fmt.ras.Ras with org.eclipse.xtext.xbase.Xbase
+
+generate ras "http://fmt.cs.utwente.nl/ras"
+
+Game hidden(WS, ML_COMMENT, SL_COMMENT):
+	'Game' name=QualifiedName
+	('Locations' '{' locations+=CardLocation ("," locations+=CardLocation)* '}')?
+	('Turnphases' '{' turnphases+=TurnPhase ("," turnphases+=TurnPhase)* '}')?
+	('Cardproperties' '{' cardpropertytypes+=CardPropertyType ("," cardpropertytypes+=CardPropertyType)* '}')?
+	('Rules' '{' rules+=CardRule ("," rules+=CardRule)* '}')?
+	cards+=Card*
+	'Setup' '{' setup=Setup '}';
+
+Setup:
+	'players' players=INT
+	'cards' '{' cards+=InitialLocationState (',' cards+=InitialLocationState)* '}';
+
+InitialLocationState:
+	loc=[CardLocation] '{' (cards+=[Card])? (',' cards+=[Card])* '}';
+
+Card:
+	'Card' name=ID '{'
+	('cost' '{' cost+=Cost ("," cost+=Cost)* '}')?
+	('property' properties+=CardProperty)*
+	('rules' '{' rules+=CardRule ("," rules+=CardRule)* '}')?
+	('actions' '{' actions+=CardAction ("," actions+=CardAction)* '}')?
+	'}';
+
+CardProperty:
+	type=[CardPropertyType] (':' value=INT)?;
+
+CardPropertyType:
+	name=ID;
+
+CardRule:
+	{CardRule}
+	'{'
+	('name' name=ID)?
+	('description' description=STRING)?
+	('requirement' requirements+=ExpressionBlock)*
+	('action' action=Expression)?
+	('duration' duration=Duration)?
+	'}';
+
+Cost:
+	'{' 'type' type=CostType ',' 'amount' amount=INT
+	(',' 'card' card=[Card])?
+	(',' 'ofproperty' property=[CardPropertyType])? '}';
+
+CardAction:
+	'{' 'cost' '{' cost+=Cost ("," cost+=Cost)* '}' ('gains' '{' gains+=CardRule ("," gains+=CardRule)* '}')? '}';
+
+Duration:
+	'{' ('amount' amount=INT)? 'phase' mode=[TurnPhase] '}';
+
+TurnPhase:
+	name=ID;
+
+CardLocation:
+	name=ID ':' type=LocationType visibility=LocationVisibility;
+
+ExpressionBlock:
+	left=Expression keyword=ExpressionKeyword (right=Expression)? ('or' or=ExpressionBlock)?;
+
+Expression:
+	TurnExpression | TurnPhaseExpression | CardExpression | PlayerExpression | RuleExpression | ValueExpression |
+	DrawExpression | PlayExpression | LocationExpression | LocationCardExpression;
+
+TurnExpression returns Expression:
+	{TurnExpression}
+	'Turn' keyword=TurnKeyword (expression=Expression)?;
+
+TurnPhaseExpression returns Expression:
+	{TurnPhaseExpression}
+	'TurnPhase' phase=[TurnPhase];
+
+RuleExpression returns Expression:
+	{RuleExpression}
+	'Rule' keyword=RuleKeyword rule=[CardRule];
+
+CardExpression returns Expression:
+	{CardExpression}
+	'Card' 'property' (keyword=CardKeyword)? property=[CardPropertyType] (value=INT)?; 
+
+PlayerExpression returns Expression:
+	{PlayerExpression}
+	'Player' keyword=PlayerKeyword (value=INT);
+
+DrawExpression returns Expression:
+	{DrawExpression}
+	'Draw' fromOrTo=DrawPlayKeyword;
+
+PlayExpression returns Expression:
+	{PlayExpression}
+	'Play' fromOrTo=DrawPlayKeyword;
+
+LocationExpression returns Expression:
+	{LocationExpression}
+	'Location' location=[CardLocation];
+
+LocationCardExpression returns Expression:
+	{LocationCardExpression}
+	'LocationCard' location=[CardLocation] 'property' property=[CardPropertyType];
+
+ValueExpression returns Expression:
+	{ValueExpression}
+	value=INT;
+
+enum DrawPlayKeyword:
+	from | to;
+
+enum RuleKeyword:
+	remove | add;
+
+enum ExpressionKeyword:
+	remove | add | matches;
+
+enum CardKeyword:
+	remove | add;
+
+enum TurnKeyword:
+	prev | cur | next | skip | repeat | reverse;
+
+enum PlayerKeyword:
+	take;
+
+enum LocationVisibility:
+	Visible | Hidden;
+
+enum CostType:
+	Live | Card;
+
+enum LocationType:
+	Shared | Individual;

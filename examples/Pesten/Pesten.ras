@@ -1,0 +1,431 @@
+Game nl.pesten
+
+Locations {
+	Deck: Individual Visible,  
+	DrawingPile: Shared Hidden,  
+	Table: Shared Visible
+}
+
+Turnphases { 
+	Single 
+}
+
+Cardproperties { 
+	Suit,
+	Number
+} 
+
+Rules { 
+	{ 
+		name SameSuitOrNumberOrJackOrJoker
+		requirement Card property Suit matches LocationCard Table property Suit or
+					Card property Number matches LocationCard Table property Number or
+					Card property Number matches 11 or // Jack
+					Card property Suit matches 4 // Joker
+	},
+	{
+		name DrawFromDrawingPileToDeckOnly
+		requirement Draw from matches Location DrawingPile
+		requirement Draw to matches Location Deck
+	},
+	{
+		name PlayFromDeckToTableOnly
+		requirement Play from matches Location Deck
+		requirement Play to matches Location Table
+	}
+}  
+
+Card HeartsKing {
+	property Suit: 0 
+	property Number: 13
+}
+
+Card HeartsQueen {
+	property Suit: 0
+	property Number: 12
+}
+
+Card HeartsJack {
+	property Suit: 0
+	property Number: 11
+	rules {
+		{
+			action Turn next Rule remove SameSuitOrNumberOrJackOrJoker 
+		}
+	}
+}
+
+Card HeartsTen {
+	property Suit: 0
+	property Number: 10
+}
+
+Card HeartsNine {
+	property Suit: 0
+	property Number: 9
+}
+
+Card HeartsEight {
+	property Suit: 0
+	property Number: 8
+	rules {
+		{
+			action Turn skip
+		}
+	}
+}
+
+Card HeartsSeven {
+	property Suit: 0
+	property Number: 7
+	rules {
+		{
+			action Turn repeat
+		}
+	}
+}
+
+Card HeartsSix {
+	property Suit: 0
+	property Number: 6
+}
+
+Card HeartsFive {
+	property Suit: 0
+	property Number: 5
+}
+
+Card HeartsFour {
+	property Suit: 0
+	property Number: 4
+}
+
+Card HeartsThree {
+	property Suit: 0
+	property Number: 3
+}
+
+Card HeartsTwo {
+	property Suit: 0
+	property Number: 2
+	rules {
+		{
+			action Turn next Player take 2
+		}
+	}
+}
+
+Card HeartsAce {
+	property Suit: 0
+	property Number: 1
+	rules {
+		{
+			action Turn reverse
+		}
+	}
+}
+
+Card SpadesKing {
+	property Suit: 1
+	property Number: 13
+}
+
+Card SpadesQueen {
+	property Suit: 1
+	property Number: 12
+}
+
+Card SpadesJack {
+	property Suit: 1
+	property Number: 11
+	rules {
+		{
+			action Turn next Rule remove SameSuitOrNumberOrJackOrJoker 
+		}
+	}
+}
+
+Card SpadesTen {
+	property Suit: 1
+	property Number: 10
+}
+
+Card SpadesNine {
+	property Suit: 1
+	property Number: 9
+}
+
+Card SpadesEight {
+	property Suit: 1
+	property Number: 8
+	rules {
+		{
+			action Turn skip
+		}
+	}
+}
+
+Card SpadesSeven {
+	property Suit: 1
+	property Number: 7
+	rules {
+		{
+			action Turn repeat
+		}
+	}
+}
+
+Card SpadesSix {
+	property Suit: 1
+	property Number: 6
+}
+
+Card SpadesFive {
+	property Suit: 1
+	property Number: 5
+}
+
+Card SpadesFour {
+	property Suit: 1
+	property Number: 4
+}
+
+Card SpadesThree {
+	property Suit: 1
+	property Number: 3
+}
+
+Card SpadesTwo {
+	property Suit: 1
+	property Number: 2
+	rules {
+		{
+			action Turn next Player take 2
+		}
+	}
+}
+
+Card SpadesAce {
+	property Suit: 1
+	property Number: 1
+	rules {
+		{
+			action Turn reverse	
+		}
+	}
+}
+
+Card DiamondsKing {
+	property Suit: 2
+	property Number: 13
+}
+
+Card DiamondsQueen {
+	property Suit: 2
+	property Number: 12
+}
+
+Card DiamondsJack {
+	property Suit: 2
+	property Number: 11
+	rules {
+		{
+			action Turn next Rule remove SameSuitOrNumberOrJackOrJoker 
+		}
+	}
+}
+
+Card DiamondsTen {
+	property Suit: 2
+	property Number: 10
+}
+
+Card DiamondsNine {
+	property Suit: 2
+	property Number: 9
+}
+
+Card DiamondsEight {
+	property Suit: 2
+	property Number: 8
+	rules {
+		{
+			action Turn skip
+		}
+	}
+}
+
+Card DiamondsSeven {
+	property Suit: 2
+	property Number: 7
+	rules {
+		{
+			action Turn repeat
+		}
+	}
+}
+
+Card DiamondsSix {
+	property Suit: 2
+	property Number: 6
+}
+
+Card DiamondsFive {
+	property Suit: 2
+	property Number: 5
+}
+
+Card DiamondsFour {
+	property Suit: 2
+	property Number: 4
+}
+
+Card DiamondsThree {
+	property Suit: 2
+	property Number: 3
+}
+
+Card DiamondsTwo {
+	property Suit: 2
+	property Number: 2
+	rules {
+		{
+			action Turn next Player take 2
+		}
+	}
+}
+
+Card DiamondsAce {
+	property Suit: 2
+	property Number: 1
+	rules {
+		{
+			action Turn reverse	
+		}
+	}
+}
+
+Card ClubsKing {
+	property Suit: 3
+	property Number: 13
+}
+
+Card ClubsQueen {
+	property Suit: 3
+	property Number: 12
+}
+
+Card ClubsJack {
+	property Suit: 3
+	property Number: 11
+	rules {
+		{
+			action Turn next Rule remove SameSuitOrNumberOrJackOrJoker 
+		}
+	}
+}
+
+Card ClubsTen {
+	property Suit: 3
+	property Number: 10
+}
+
+Card ClubsNine {
+	property Suit: 3
+	property Number: 9
+}
+
+Card ClubsEight {
+	property Suit: 3
+	property Number: 8
+	rules {
+		{
+			action Turn skip
+		}
+	}
+}
+
+Card ClubsSeven {
+	property Suit: 3
+	property Number: 7
+	rules {
+		{
+			action Turn repeat
+		}
+	}
+}
+
+Card ClubsSix {
+	property Suit: 3
+	property Number: 6
+}
+
+Card ClubsFive {
+	property Suit: 3
+	property Number: 5
+}
+
+Card ClubsFour {
+	property Suit: 3
+	property Number: 4
+}
+
+Card ClubsThree {
+	property Suit: 3
+	property Number: 3
+}
+
+Card ClubsTwo {
+	property Suit: 3
+	property Number: 2
+	rules {
+		{
+			action Turn next Player take 2
+		}
+	}
+}
+
+Card ClubsAce {
+	property Suit: 3
+	property Number: 1
+	rules {
+		{
+			action Turn reverse	
+		}
+	}
+}
+
+Card JokerOne {
+	property Suit: 4 // Joker Suit
+	rules {
+		{
+			action Turn next Player take 5
+		}
+	}
+}
+
+Card JokerTwo {
+	property Suit: 4 // Joker Suit
+	rules {
+		{
+			action Turn next Player take 5
+		}
+	}
+}
+
+Setup {
+	players 3
+	cards {
+		Deck { HeartsFive, HeartsQueen, JokerOne, SpadesSeven, ClubsEight, DiamondsTwo, SpadesFive },
+		Deck { ClubsFour, SpadesThree, ClubsAce, SpadesQueen, DiamondsFour, HeartsJack, DiamondsKing },
+		Deck { HeartsKing, SpadesEight, DiamondsJack, SpadesAce, DiamondsFive, ClubsSix, DiamondsNine },
+		Table { ClubsKing },
+		DrawingPile { 
+			HeartsTen, HeartsNine, HeartsEight, HeartsSeven, HeartsSix, HeartsFour, HeartsThree, HeartsTwo, HeartsAce,
+			SpadesKing, SpadesJack, SpadesTen, SpadesNine, SpadesSix, SpadesFour, SpadesTwo,
+			DiamondsQueen, DiamondsTen, DiamondsEight, DiamondsSeven, DiamondsSix, DiamondsThree, DiamondsAce,
+			ClubsQueen, ClubsJack, ClubsTen, ClubsNine, ClubsSeven, ClubsFive, ClubsThree, ClubsTwo,
+			JokerTwo
+		}
+	}
+}

@@ -1,0 +1,171 @@
+Game com.wizards.magic
+
+Locations {
+	Deck: Individual Visible,
+	Graveyard: Individual Visible,
+	Battlefield: Individual Visible
+}
+ 
+Turnphases {
+	Untap,
+	Upkeep,
+	Draww,
+	Main,
+	Combat,
+	Main2,
+	End,
+	Cleanup
+}
+
+Cardproperties {
+	Toughness,
+	Power,
+	Flying,
+	Indestructible,
+	Creature,
+	Planeswalker,
+	Enchantment,
+	Instant,
+	Artifact,
+	Sorcery,
+	Land,
+	Swamp,
+	Mountain,
+	Plains,
+	Island,
+	Forest,
+	Wastes
+}
+
+Card AdantoVanguard {
+	cost {
+		{ type Card, amount 1, ofproperty Land },
+		{ type Card, amount 1, ofproperty Plains }
+	}
+	property Toughness: 1
+	property Power: 1
+	property Flying
+	property Creature
+	rules {
+		{
+			requirement Turn cur matches TurnPhase Combat
+			action Card property add Toughness 2
+		}
+	}
+	actions {
+		{ 
+			cost {{type Live, amount 4}}
+			gains {
+				{
+					action Card property add Toughness
+					duration {amount 3 phase Cleanup}
+				}
+			}
+		}
+	}
+}
+
+Card AdmiralBeckettBrass {
+	cost {
+		{ type Card, amount 1, ofproperty Land },
+		{ type Card, amount 1, ofproperty Swamp },
+		{ type Card, amount 1, ofproperty Island },
+		{ type Card, amount 1, ofproperty Mountain }
+	}
+	property Toughness: 3
+	property Power: 3
+	property Creature
+//	rules {
+//		{
+//			requirements "card is pirate and card is not this and card.player is me"
+//			action "toughness +1, power +1"
+//		},
+//		{
+//			requirements 'turnmode is end and card exists 
+//							where card is nonland 
+//							and card is permanent 
+//							and card.player has damage from pirates > 3 this turn'
+//			action "take control"
+//		}
+//	}
+}
+
+Card AirElemental {
+	cost {
+		{ type Card, amount 3, ofproperty Land },
+		{ type Card, amount 1, ofproperty Island }
+	}
+	property Toughness: 4
+	property Power: 4
+	property Flying
+	property Creature
+}
+
+Card AncientBrontodon {
+	cost {
+		{ type Card, amount 6, ofproperty Land },
+		{ type Card, amount 2, ofproperty Forest }
+	}
+	property Toughness: 9
+	property Power: 9
+	property Creature
+}
+
+Card AngrathsMarauders {
+	cost {
+		{ type Card, amount 5, ofproperty Land },
+		{ type Card, amount 2, ofproperty Mountain }
+	}
+	property Toughness: 4
+	property Power
+	property Creature
+//	rules {
+//		{
+//			requirements "card.deals_damage and card.owner = me and card.damagetaker is other "
+//			action "damage * 2"
+//		}
+//	}
+}
+
+
+Card PlainsOne {
+	property Land
+	property Plains
+}
+
+Card IslandOne {
+	property Land
+	property Island
+}
+
+Card SwampOne {
+	property Land
+	property Swamp
+}
+
+Card MountainOne {
+	property Land
+	property Mountain
+}
+
+Card ForestOne {
+	property Land
+	property Forest
+}
+
+Card WastesOne {
+	property Land
+	property Wastes
+}
+
+Setup {
+	players 2
+	cards {
+		Deck {},
+		Deck {},
+		Graveyard {},
+		Graveyard {},
+		Battlefield {},
+		Battlefield {}
+	}
+}
