@@ -12,7 +12,8 @@ Turnphases {
 
 Cardproperties { 
 	Suit,
-	Number
+	Number,
+	Pest
 } 
 
 Rules { 
@@ -48,6 +49,7 @@ Card HeartsQueen {
 Card HeartsJack {
 	property Suit: 0
 	property Number: 11
+	property Pest
 	rules {
 		{
 			action Turn next Rule remove SameSuitOrNumberOrJackOrJoker 
@@ -68,6 +70,7 @@ Card HeartsNine {
 Card HeartsEight {
 	property Suit: 0
 	property Number: 8
+	property Pest
 	rules {
 		{
 			action Turn skip
@@ -78,6 +81,7 @@ Card HeartsEight {
 Card HeartsSeven {
 	property Suit: 0
 	property Number: 7
+	property Pest
 	rules {
 		{
 			action Turn repeat
@@ -108,6 +112,7 @@ Card HeartsThree {
 Card HeartsTwo {
 	property Suit: 0
 	property Number: 2
+	property Pest
 	rules {
 		{
 			action Turn next Player take 2
@@ -118,6 +123,7 @@ Card HeartsTwo {
 Card HeartsAce {
 	property Suit: 0
 	property Number: 1
+	property Pest
 	rules {
 		{
 			action Turn reverse
@@ -138,6 +144,7 @@ Card SpadesQueen {
 Card SpadesJack {
 	property Suit: 1
 	property Number: 11
+	property Pest
 	rules {
 		{
 			action Turn next Rule remove SameSuitOrNumberOrJackOrJoker 
@@ -158,6 +165,7 @@ Card SpadesNine {
 Card SpadesEight {
 	property Suit: 1
 	property Number: 8
+	property Pest
 	rules {
 		{
 			action Turn skip
@@ -168,6 +176,7 @@ Card SpadesEight {
 Card SpadesSeven {
 	property Suit: 1
 	property Number: 7
+	property Pest
 	rules {
 		{
 			action Turn repeat
@@ -198,6 +207,7 @@ Card SpadesThree {
 Card SpadesTwo {
 	property Suit: 1
 	property Number: 2
+	property Pest
 	rules {
 		{
 			action Turn next Player take 2
@@ -208,6 +218,7 @@ Card SpadesTwo {
 Card SpadesAce {
 	property Suit: 1
 	property Number: 1
+	property Pest
 	rules {
 		{
 			action Turn reverse	
@@ -228,6 +239,7 @@ Card DiamondsQueen {
 Card DiamondsJack {
 	property Suit: 2
 	property Number: 11
+	property Pest
 	rules {
 		{
 			action Turn next Rule remove SameSuitOrNumberOrJackOrJoker 
@@ -248,6 +260,7 @@ Card DiamondsNine {
 Card DiamondsEight {
 	property Suit: 2
 	property Number: 8
+	property Pest
 	rules {
 		{
 			action Turn skip
@@ -258,6 +271,7 @@ Card DiamondsEight {
 Card DiamondsSeven {
 	property Suit: 2
 	property Number: 7
+	property Pest
 	rules {
 		{
 			action Turn repeat
@@ -288,6 +302,7 @@ Card DiamondsThree {
 Card DiamondsTwo {
 	property Suit: 2
 	property Number: 2
+	property Pest
 	rules {
 		{
 			action Turn next Player take 2
@@ -298,6 +313,7 @@ Card DiamondsTwo {
 Card DiamondsAce {
 	property Suit: 2
 	property Number: 1
+	property Pest
 	rules {
 		{
 			action Turn reverse	
@@ -318,6 +334,7 @@ Card ClubsQueen {
 Card ClubsJack {
 	property Suit: 3
 	property Number: 11
+	property Pest
 	rules {
 		{
 			action Turn next Rule remove SameSuitOrNumberOrJackOrJoker 
@@ -338,6 +355,7 @@ Card ClubsNine {
 Card ClubsEight {
 	property Suit: 3
 	property Number: 8
+	property Pest
 	rules {
 		{
 			action Turn skip
@@ -348,6 +366,7 @@ Card ClubsEight {
 Card ClubsSeven {
 	property Suit: 3
 	property Number: 7
+	property Pest
 	rules {
 		{
 			action Turn repeat
@@ -378,6 +397,7 @@ Card ClubsThree {
 Card ClubsTwo {
 	property Suit: 3
 	property Number: 2
+	property Pest
 	rules {
 		{
 			action Turn next Player take 2
@@ -388,6 +408,7 @@ Card ClubsTwo {
 Card ClubsAce {
 	property Suit: 3
 	property Number: 1
+	property Pest
 	rules {
 		{
 			action Turn reverse	
@@ -397,6 +418,7 @@ Card ClubsAce {
 
 Card JokerOne {
 	property Suit: 4 // Joker Suit
+	property Pest
 	rules {
 		{
 			action Turn next Player take 5
@@ -406,6 +428,7 @@ Card JokerOne {
 
 Card JokerTwo {
 	property Suit: 4 // Joker Suit
+	property Pest
 	rules {
 		{
 			action Turn next Player take 5
