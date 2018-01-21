@@ -4,10 +4,10 @@ generate ras "http://fmt.cs.utwente.nl/ras"
 
 Game hidden(WS, ML_COMMENT, SL_COMMENT):
 	'Game' name=QualifiedName
-	('Locations' '{' locations+=CardLocation ("," locations+=CardLocation)* '}')?
-	('Turnphases' '{' turnphases+=TurnPhase ("," turnphases+=TurnPhase)* '}')?
-	('Cardproperties' '{' cardpropertytypes+=CardPropertyType ("," cardpropertytypes+=CardPropertyType)* '}')?
-	('Rules' '{' rules+=CardRule ("," rules+=CardRule)* '}')?
+	('Locations' '{' locations+=CardLocation (',' locations+=CardLocation)* '}')?
+	('Turnphases' '{' turnphases+=TurnPhase (',' turnphases+=TurnPhase)* '}')?
+	('Cardproperties' '{' cardpropertytypes+=CardPropertyType (',' cardpropertytypes+=CardPropertyType)* '}')?
+	('Rules' '{' rules+=CardRule (',' rules+=CardRule)* '}')?
 	cards+=Card*
 	'Setup' '{' setup=Setup '}';
 
@@ -20,10 +20,10 @@ InitialLocationState:
 
 Card:
 	'Card' name=ID '{'
-	('cost' '{' cost+=Cost ("," cost+=Cost)* '}')?
+	('cost' '{' cost+=Cost (',' cost+=Cost)* '}')?
 	('property' properties+=CardProperty)*
-	('rules' '{' rules+=CardRule ("," rules+=CardRule)* '}')?
-	('actions' '{' actions+=CardAction ("," actions+=CardAction)* '}')?
+	('rules' '{' rules+=CardRule (',' rules+=CardRule)* '}')?
+	('actions' '{' actions+=CardAction (',' actions+=CardAction)* '}')?
 	'}';
 
 CardProperty:
@@ -48,7 +48,7 @@ Cost:
 	(',' 'ofproperty' property=[CardPropertyType])? '}';
 
 CardAction:
-	'{' 'cost' '{' cost+=Cost ("," cost+=Cost)* '}' ('gains' '{' gains+=CardRule ("," gains+=CardRule)* '}')? '}';
+	'{' 'cost' '{' cost+=Cost (',' cost+=Cost)* '}' ('gains' '{' gains+=CardRule (',' gains+=CardRule)* '}')? '}';
 
 Duration:
 	'{' ('amount' amount=INT)? 'phase' mode=[TurnPhase] '}';
@@ -80,7 +80,7 @@ RuleExpression returns Expression:
 
 CardExpression returns Expression:
 	{CardExpression}
-	'Card' 'property' (keyword=CardKeyword)? property=[CardPropertyType] (value=INT)?; 
+	'Card' 'property' (keyword=CardKeyword)? property=[CardPropertyType] (value=INT)?;
 
 PlayerExpression returns Expression:
 	{PlayerExpression}
