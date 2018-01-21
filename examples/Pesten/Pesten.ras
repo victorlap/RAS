@@ -6,10 +6,6 @@ Locations {
 	Table: Shared Visible
 }
 
-Turnphases { 
-	Single 
-}
-
 Cardproperties { 
 	Suit,
 	Number,
