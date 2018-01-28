@@ -6,17 +6,23 @@ Game hidden(WS, ML_COMMENT, SL_COMMENT):
 	'Game' name=QualifiedName
 	('Locations' '{' locations+=CardLocation (',' locations+=CardLocation)* '}')?
 	('Turnphases' '{' turnphases+=TurnPhase (',' turnphases+=TurnPhase)* '}')?
-	('Cardproperties' '{' cardpropertytypes+=CardPropertyType (',' cardpropertytypes+=CardPropertyType)* '}')?
+	('Properties' '{' cardpropertytypes+=CardPropertyType (',' cardpropertytypes+=CardPropertyType)* '}')?
 	('Rules' '{' rules+=CardRule (',' rules+=CardRule)* '}')?
 	cards+=Card*
 	'Setup' '{' setup=Setup '}';
 
 Setup:
-	'players' players=INT
-	'cards' '{' cards+=InitialLocationState (',' cards+=InitialLocationState)* '}';
+	players+=Player (players+=Player)*
+	('cards' '{'
+	cards+=InitialLocationState (',' cards+=InitialLocationState)*
+	'}')?;
 
 InitialLocationState:
 	loc=[CardLocation] '{' (cards+=[Card])? (',' cards+=[Card])* '}';
+
+Player:
+	'Player' name=STRING
+	cards+=InitialLocationState (',' cards+=InitialLocationState)*;
 
 Card:
 	'Card' name=ID '{'
@@ -24,6 +30,7 @@ Card:
 	('property' properties+=CardProperty)*
 	('rules' '{' rules+=CardRule (',' rules+=CardRule)* '}')?
 	('actions' '{' actions+=CardAction (',' actions+=CardAction)* '}')?
+	('sideeffects' '{' sideeffects+=SideEffect (',' sideeffects+=SideEffect)* '}')?
 	'}';
 
 CardProperty:
@@ -38,7 +45,6 @@ CardRule:
 	('name' name=ID)?
 	('description' description=STRING)?
 	('requirement' requirements+=ExpressionBlock)*
-	('action' action=Expression)?
 	('duration' duration=Duration)?
 	'}';
 
@@ -47,8 +53,16 @@ Cost:
 	(',' 'card' card=[Card])?
 	(',' 'ofproperty' property=[CardPropertyType])? '}';
 
+SideEffect:
+	{SideEffect}
+	'{'
+	('requirement' requirements+=Expression)*
+	('action' actions+=Expression)+
+	('duration' duration=Duration)?
+	'}';
+
 CardAction:
-	'{' 'cost' '{' cost+=Cost (',' cost+=Cost)* '}' ('gains' '{' gains+=CardRule (',' gains+=CardRule)* '}')? '}';
+	'{' 'cost' '{' cost+=Cost (',' cost+=Cost)* '}' ('gains' '{' gains+=SideEffect (',' gains+=SideEffect)* '}')? '}';
 
 Duration:
 	'{' ('amount' amount=INT)? 'phase' mode=[TurnPhase] '}';
@@ -63,48 +77,44 @@ ExpressionBlock:
 	left=Expression keyword=ExpressionKeyword (right=Expression)? ('or' or=ExpressionBlock)?;
 
 Expression:
-	TurnExpression | TurnPhaseExpression | CardExpression | PlayerExpression | RuleExpression | ValueExpression |
-	DrawExpression | PlayExpression | LocationExpression | LocationCardExpression;
+	TurnExpression | TurnPhaseExpression | CardPropertyExpression | PlayerExpression | RuleExpression | ValueExpression |
+	DrawExpression | PlayExpression | LocationExpression | OtherCardExpression | LocationCardExpression | OtherCardPropertyExpression;
 
 TurnExpression returns Expression:
-	{TurnExpression}
-	'Turn' keyword=TurnKeyword (expression=Expression)?;
+	{TurnExpression} 'Turn' keyword=TurnKeyword (expression=Expression)?;
 
 TurnPhaseExpression returns Expression:
-	{TurnPhaseExpression}
-	'TurnPhase' phase=[TurnPhase];
+	{TurnPhaseExpression} 'TurnPhase' phase=[TurnPhase];
 
 RuleExpression returns Expression:
-	{RuleExpression}
-	'Rule' keyword=RuleKeyword rule=[CardRule];
+	{RuleExpression} 'Rule' keyword=RuleKeyword rule=[CardRule];
 
-CardExpression returns Expression:
-	{CardExpression}
-	'Card' 'property' (keyword=CardKeyword)? property=[CardPropertyType] (value=INT)?;
-
-PlayerExpression returns Expression:
-	{PlayerExpression}
-	'Player' keyword=PlayerKeyword (value=INT);
-
-DrawExpression returns Expression:
-	{DrawExpression}
-	'Draw' fromOrTo=DrawPlayKeyword;
-
-PlayExpression returns Expression:
-	{PlayExpression}
-	'Play' fromOrTo=DrawPlayKeyword;
-
-LocationExpression returns Expression:
-	{LocationExpression}
-	'Location' location=[CardLocation];
+CardPropertyExpression returns Expression:
+	{CardPropertyExpression} 'Card' 'property' (keyword=CardKeyword)? property=[CardPropertyType] (value=INT)?;
 
 LocationCardExpression returns Expression:
-	{LocationCardExpression}
-	'LocationCard' location=[CardLocation] 'property' property=[CardPropertyType];
+	{LocationCardExpression} 'LocationCard' location=[CardLocation] 'property' property=[CardPropertyType];
+
+OtherCardPropertyExpression returns Expression:
+	{OtherCardPropertyExpression} 'OtherCard' 'property' (keyword=CardKeyword)? property=[CardPropertyType] (value=INT)?;
+
+OtherCardExpression returns Expression:
+	{OtherCardExpression} 'OtherCard' keyword=CardKeyword (value=INT);
+
+PlayerExpression returns Expression:
+	{PlayerExpression} 'Player' keyword=PlayerKeyword (keyword2=PlayerKeyword)? (value=INT)? (costtype=CostType)?;
+
+DrawExpression returns Expression:
+	{DrawExpression} 'Draw' fromOrTo=DrawPlayKeyword;
+
+PlayExpression returns Expression:
+	{PlayExpression} 'Play' fromOrTo=DrawPlayKeyword;
+
+LocationExpression returns Expression:
+	{LocationExpression} 'Location' location=[CardLocation];
 
 ValueExpression returns Expression:
-	{ValueExpression}
-	value=INT;
+	{ValueExpression} value=INT;
 
 enum DrawPlayKeyword:
 	from | to;
@@ -116,13 +126,13 @@ enum ExpressionKeyword:
 	remove | add | matches;
 
 enum CardKeyword:
-	remove | add;
+	remove | add | is | isnot | takecontrol | limit;
 
 enum TurnKeyword:
 	prev | cur | next | skip | repeat | reverse;
 
 enum PlayerKeyword:
-	take;
+	take | me | other | loses | gains;
 
 enum LocationVisibility:
 	Visible | Hidden;

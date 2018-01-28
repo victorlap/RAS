@@ -32,9 +32,11 @@ public class Player {
 	public String toString() {
 		StringBuffer result = new StringBuffer();
 		result.append(this.getName());
+		result.append(" ( ");
 		for(Location l : locations) {
-			result.append(" ( "+ l.toString() + " ) ");
+			result.append(l.toString() + " ");
 		}
+		result.append(") ");
 		return result.toString();
 	}
 }

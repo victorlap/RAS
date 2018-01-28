@@ -7,8 +7,8 @@ import nl.utwente.fmt.ras.interpreter.models.Location;
 import nl.utwente.fmt.ras.interpreter.models.RemovedRule;
 import nl.utwente.fmt.ras.interpreter.models.Turn;
 import nl.utwente.fmt.ras.ras.Card;
-import nl.utwente.fmt.ras.ras.CardExpression;
 import nl.utwente.fmt.ras.ras.CardProperty;
+import nl.utwente.fmt.ras.ras.CardPropertyExpression;
 import nl.utwente.fmt.ras.ras.CardRule;
 import nl.utwente.fmt.ras.ras.DrawExpression;
 import nl.utwente.fmt.ras.ras.DrawPlayKeyword;
@@ -104,7 +104,7 @@ public class RuleEngine {
 
 		if (left instanceof PlayExpression && right instanceof LocationExpression) {
 			result = evaluatePlayExpression(ex, from, to);
-		} else if (left instanceof CardExpression && key.equals(ExpressionKeyword.MATCHES)) {
+		} else if (left instanceof CardPropertyExpression && key.equals(ExpressionKeyword.MATCHES)) {
 			result = evaluateCardMatchesExpression(ex, from, to, card);
 		} else if (left instanceof DrawExpression && right instanceof LocationExpression) {
 			// Silently fail because this rule is only evaluated in canDraw()
@@ -121,7 +121,7 @@ public class RuleEngine {
 	}
 
 	private boolean evaluateCardMatchesExpression(ExpressionBlock ex, Location from, Location to, Card card) {
-		CardExpression left = (CardExpression) ex.getLeft();
+		CardPropertyExpression left = (CardPropertyExpression) ex.getLeft();
 		int leftvalue = -1;
 		int rightvalue = -1;
 

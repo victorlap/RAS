@@ -1,6 +1,7 @@
 package nl.utwente.fmt.ras.interpreter;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 import org.eclipse.emf.common.util.EList;
@@ -10,7 +11,6 @@ import nl.utwente.fmt.ras.interpreter.models.Player;
 import nl.utwente.fmt.ras.interpreter.models.Turn;
 import nl.utwente.fmt.ras.ras.Card;
 import nl.utwente.fmt.ras.ras.CardLocation;
-import nl.utwente.fmt.ras.ras.CardRule;
 import nl.utwente.fmt.ras.ras.Expression;
 import nl.utwente.fmt.ras.ras.Game;
 import nl.utwente.fmt.ras.ras.InitialLocationState;
@@ -19,9 +19,9 @@ import nl.utwente.fmt.ras.ras.PlayerExpression;
 import nl.utwente.fmt.ras.ras.PlayerKeyword;
 import nl.utwente.fmt.ras.ras.RuleExpression;
 import nl.utwente.fmt.ras.ras.RuleKeyword;
+import nl.utwente.fmt.ras.ras.SideEffect;
 import nl.utwente.fmt.ras.ras.TurnExpression;
 import nl.utwente.fmt.ras.ras.TurnKeyword;
-
 
 public class GameInterpreter {
 
@@ -328,39 +328,41 @@ public class GameInterpreter {
 	}
 
 	private void handleSideEffects(Location from, Location to, Card card) {
-		for (CardRule rule : card.getRules()) {
-			Expression ex = rule.getAction();
-			if (ex instanceof TurnExpression) {
-				TurnExpression turnex = (TurnExpression) ex;
-				if (turnex.getKeyword().equals(TurnKeyword.REPEAT)) {
-					this.turnAdd = 0;
-				} else if (turnex.getKeyword().equals(TurnKeyword.REVERSE)) {
-					this.turnDir *= -1;
-				} else if (turnex.getKeyword().equals(TurnKeyword.SKIP)) {
-					this.turnAdd = 2;
-				} else if (turnex.getKeyword().equals(TurnKeyword.NEXT)) {
-					if (turnex.getExpression() instanceof PlayerExpression) {
-						PlayerExpression playerex = (PlayerExpression) turnex.getExpression();
-						if (playerex.getKeyword().equals(PlayerKeyword.TAKE)) {
-							this.nextPlayerTakes = playerex.getValue();
+		for (SideEffect effect : card.getSideeffects()) {
+			List<Expression> exs = effect.getActions();
+			for (Expression ex : exs) {
+				if (ex instanceof TurnExpression) {
+					TurnExpression turnex = (TurnExpression) ex;
+					if (turnex.getKeyword().equals(TurnKeyword.REPEAT)) {
+						this.turnAdd = 0;
+					} else if (turnex.getKeyword().equals(TurnKeyword.REVERSE)) {
+						this.turnDir *= -1;
+					} else if (turnex.getKeyword().equals(TurnKeyword.SKIP)) {
+						this.turnAdd = 2;
+					} else if (turnex.getKeyword().equals(TurnKeyword.NEXT)) {
+						if (turnex.getExpression() instanceof PlayerExpression) {
+							PlayerExpression playerex = (PlayerExpression) turnex.getExpression();
+							if (playerex.getKeyword().equals(PlayerKeyword.TAKE)) {
+								this.nextPlayerTakes = playerex.getValue();
+							} else {
+								System.err.println("Cannot interpret sideeffects" + playerex.toString());
+							}
+						} else if (turnex.getExpression() instanceof RuleExpression) {
+							RuleExpression ruleex = (RuleExpression) turnex.getExpression();
+							if (ruleex.getKeyword().equals(RuleKeyword.REMOVE)) {
+								engine.temporarilyRemove(ruleex.getRule(), 2);
+							} else {
+								System.err.println("Cannot interpret sideeffects" + ruleex.toString());
+							}
 						} else {
-							System.err.println("Cannot interpret sideeffects" + playerex.toString());
-						}
-					} else if (turnex.getExpression() instanceof RuleExpression) {
-						RuleExpression ruleex = (RuleExpression) turnex.getExpression();
-						if (ruleex.getKeyword().equals(RuleKeyword.REMOVE)) {
-							engine.temporarilyRemove(ruleex.getRule(), 2);
-						} else {
-							System.err.println("Cannot interpret sideeffects" + ruleex.toString());
+							System.err.println("Cannot interpret sideeffects" + turnex.getExpression().toString());
 						}
 					} else {
-						System.err.println("Cannot interpret sideeffects" + turnex.getExpression().toString());
+						System.err.println("Cannot interpret sideeffects" + turnex.toString());
 					}
 				} else {
-					System.err.println("Cannot interpret sideeffects" + turnex.toString());
+					System.err.println("Cannot interpret sideeffects" + ex.toString());
 				}
-			} else {
-				System.err.println("Cannot interpret sideeffects" + ex.toString());
 			}
 		}
 	}
@@ -378,26 +380,49 @@ public class GameInterpreter {
 	}
 
 	private void setupPlayers() {
-		int numPlayers = game.getSetup().getPlayers();
+		List<nl.utwente.fmt.ras.ras.Player> gamePlayers = game.getSetup().getPlayers();
+
+		int numPlayers = gamePlayers.size();
 		players = new Player[numPlayers];
 
 		for (int i = 0; i < players.length; i++) {
-			players[i] = new Player();
-			players[i].setName("Player " + (i + 1));
-		}
+			Player p = new Player();
+			p.setName(gamePlayers.get(i).getName());
+			
+			setupPlayerLocations(p);
+			
+			addPlayerCardsToLocation(gamePlayers.get(i), p);
 
+			players[i] = p;
+		}
+	}
+
+	private void setupPlayerLocations(Player player) {
+		for (CardLocation loc : game.getLocations()) {
+			if (loc.getType().equals(LocationType.INDIVIDUAL)) {
+				player.addLocation(new Location(loc));
+			}
+		}
 	}
 
 	private void setupLocations() {
 		for (CardLocation loc : game.getLocations()) {
-			if (loc.getType().equals(LocationType.INDIVIDUAL)) {
-				for (Player player : players) {
-					player.addLocation(new Location(loc));
-				}
-			}
 			if (loc.getType().equals(LocationType.SHARED)) {
 				this.sharedLocations.add(new Location(loc));
 			}
+		}
+	}
+	
+	private void addPlayerCardsToLocation(nl.utwente.fmt.ras.ras.Player gamePlayer, Player p) {
+		for (InitialLocationState s : gamePlayer.getCards()) {
+			for (Location l : p.getLocations()) {
+				if (l.getLoc().equals(s.getLoc()) && !l.hasCards()) {
+					l.addCards(s.getCards());
+					l.shuffle();
+					return;
+				}
+			}
+			err("Could not add cards for player " + p.getName() + " : " + s.getLoc().getName());
 		}
 	}
 
@@ -411,22 +436,17 @@ public class GameInterpreter {
 				}
 			}
 		}
-		if (loc.getType().equals(LocationType.INDIVIDUAL)) {
-			for (Player p : players) {
-				for (Location l : p.getLocations()) {
-					if (l.getLoc().equals(loc) && !l.hasCards()) {
-						l.addCards(cards);
-						l.shuffle();
-						return;
-					}
-				}
-			}
-		}
 		err("Could not add cards: " + loc.getName());
 	}
 
 	private void setupCards() {
 		for (InitialLocationState s : game.getSetup().getCards()) {
+
+			if (s.getLoc().getType().equals(LocationType.INDIVIDUAL)) {
+				err("Individual location should be added to a player, not globally! Skipping...");
+				continue;
+			}
+
 			this.addCardsToLocation(s.getLoc(), s.getCards());
 		}
 	}

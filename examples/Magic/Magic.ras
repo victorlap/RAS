@@ -17,7 +17,7 @@ Turnphases {
 	Cleanup
 }
 
-Cardproperties {
+Properties {
 	Toughness,
 	Power,
 	Flying,
@@ -34,7 +34,9 @@ Cardproperties {
 	Plains,
 	Island,
 	Forest,
-	Wastes
+	Wastes,
+	Pirate,
+	Hexproof
 }
 
 Card AdantoVanguard {
@@ -46,12 +48,6 @@ Card AdantoVanguard {
 	property Power: 1
 	property Flying
 	property Creature
-	rules {
-		{
-			requirement Turn cur matches TurnPhase Combat
-			action Card property add Toughness 2
-		}
-	}
 	actions {
 		{ 
 			cost {{type Live, amount 4}}
@@ -61,6 +57,12 @@ Card AdantoVanguard {
 					duration {amount 3 phase Cleanup}
 				}
 			}
+		}
+	}
+	sideeffects {
+		{
+			requirement TurnPhase Combat
+			action Card property add Toughness 2
 		}
 	}
 }
@@ -75,19 +77,15 @@ Card AdmiralBeckettBrass {
 	property Toughness: 3
 	property Power: 3
 	property Creature
-//	rules {
-//		{
-//			requirements "card is pirate and card is not this and card.player is me"
-//			action "toughness +1, power +1"
-//		},
-//		{
-//			requirements 'turnmode is end and card exists 
-//							where card is nonland 
-//							and card is permanent 
-//							and card.player has damage from pirates > 3 this turn'
-//			action "take control"
-//		}
-//	}
+	property Pirate
+	sideeffects {
+		{
+			requirement LocationCard Deck property Pirate
+			requirement Player me
+			action OtherCard property add Toughness 2
+			action OtherCard property add Power 1
+		}
+	}
 }
 
 Card AirElemental {
@@ -119,16 +117,93 @@ Card AngrathsMarauders {
 	property Toughness: 4
 	property Power
 	property Creature
-//	rules {
-//		{
-//			requirements "card.deals_damage and card.owner = me and card.damagetaker is other "
-//			action "damage * 2"
-//		}
-//	}
+}
+
+Card BelligerentBrontodon {
+	cost {
+		{ type Card, amount 5, ofproperty Land},
+		{ type Card, amount 1, ofproperty Plains},
+		{ type Card, amount 1, ofproperty Forest}
+	}
+	property Creature
+	property Power: 4
+	property Toughness: 6
+}
+
+Card BlightKeeper {
+	cost {
+		{ type Card, amount 1, ofproperty Plains}
+	}
+	property Creature
+	property Power: 1
+	property Toughness: 1
+	property Flying
+	actions {
+		{
+			cost {
+				{type Card, amount 7, ofproperty Land},
+				{type Card, amount 1, ofproperty Plains},
+				{type Card, amount 1, card BlightKeeper}
+			}
+			gains {
+				{ 
+					action Player me gains 4 Live
+					action Player other loses 4 Live
+				}
+			} 
+		}
+	}
+}
+
+Card BlindingFog {
+	cost {
+		{ type Card, amount 2, ofproperty Land},
+		{ type Card, amount 1, ofproperty Forest}
+	}
+	property Instant
+	sideeffects {
+		{
+			requirement Player me
+			requirement OtherCard property Creature
+			action OtherCard property add Hexproof
+		}
+	}
+}
+
+Card DiveDown {
+	cost {
+		{ type Card, amount 2, ofproperty Island}
+	}
+	sideeffects {
+		{
+			requirement Player me
+			requirement OtherCard limit 1
+			action OtherCard property add Toughness 3
+			action OtherCard property add Hexproof
+			duration {
+				amount 1 phase End
+			}
+		}
+	}
+}
+
+Card LoomingAltisaur {
+	cost {
+		{ type Card, amount 3, ofproperty Land},
+		{ type Card, amount 3, ofproperty Plains}
+	}
+	property Creature
+	property Power: 1
+	property Toughness: 7
 }
 
 
 Card PlainsOne {
+	property Land
+	property Plains
+}
+
+Card PlainsTwo {
 	property Land
 	property Plains
 }
@@ -138,7 +213,17 @@ Card IslandOne {
 	property Island
 }
 
+Card IslandTwo {
+	property Land
+	property Island
+}
+
 Card SwampOne {
+	property Land
+	property Swamp
+}
+
+Card SwampTwo {
 	property Land
 	property Swamp
 }
@@ -148,7 +233,17 @@ Card MountainOne {
 	property Mountain
 }
 
+Card MountainTwo {
+	property Land
+	property Mountain
+}
+
 Card ForestOne {
+	property Land
+	property Forest
+}
+
+Card ForestTwo {
 	property Land
 	property Forest
 }
@@ -158,14 +253,18 @@ Card WastesOne {
 	property Wastes
 }
 
+Card WastesTwo {
+	property Land
+	property Wastes
+}
+
 Setup {
-	players 2
-	cards {
-		Deck {},
-		Deck {},
+	Player "Alice"
+		Deck {MountainOne, MountainTwo, SwampOne, SwampTwo, DiveDown, AirElemental, BelligerentBrontodon},
 		Graveyard {},
-		Graveyard {},
-		Battlefield {},
 		Battlefield {}
-	}
+	Player "Bob"
+		Deck {PlainsOne, PlainsTwo, IslandOne, IslandTwo, AdantoVanguard, LoomingAltisaur, AdmiralBeckettBrass},
+		Graveyard {},
+		Battlefield {}
 }

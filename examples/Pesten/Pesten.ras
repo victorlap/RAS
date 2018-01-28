@@ -6,7 +6,7 @@ Locations {
 	Table: Shared Visible
 }
 
-Cardproperties { 
+Properties { 
 	Suit,
 	Number,
 	Pest
@@ -46,7 +46,7 @@ Card HeartsJack {
 	property Suit: 0
 	property Number: 11
 	property Pest
-	rules {
+	sideeffects {
 		{
 			action Turn next Rule remove SameSuitOrNumberOrJackOrJoker 
 		}
@@ -67,7 +67,7 @@ Card HeartsEight {
 	property Suit: 0
 	property Number: 8
 	property Pest
-	rules {
+	sideeffects {
 		{
 			action Turn skip
 		}
@@ -78,7 +78,7 @@ Card HeartsSeven {
 	property Suit: 0
 	property Number: 7
 	property Pest
-	rules {
+	sideeffects {
 		{
 			action Turn repeat
 		}
@@ -109,7 +109,7 @@ Card HeartsTwo {
 	property Suit: 0
 	property Number: 2
 	property Pest
-	rules {
+	sideeffects {
 		{
 			action Turn next Player take 2
 		}
@@ -120,7 +120,7 @@ Card HeartsAce {
 	property Suit: 0
 	property Number: 1
 	property Pest
-	rules {
+	sideeffects {
 		{
 			action Turn reverse
 		}
@@ -141,7 +141,7 @@ Card SpadesJack {
 	property Suit: 1
 	property Number: 11
 	property Pest
-	rules {
+	sideeffects {
 		{
 			action Turn next Rule remove SameSuitOrNumberOrJackOrJoker 
 		}
@@ -162,7 +162,7 @@ Card SpadesEight {
 	property Suit: 1
 	property Number: 8
 	property Pest
-	rules {
+	sideeffects {
 		{
 			action Turn skip
 		}
@@ -173,7 +173,7 @@ Card SpadesSeven {
 	property Suit: 1
 	property Number: 7
 	property Pest
-	rules {
+	sideeffects {
 		{
 			action Turn repeat
 		}
@@ -204,7 +204,7 @@ Card SpadesTwo {
 	property Suit: 1
 	property Number: 2
 	property Pest
-	rules {
+	sideeffects {
 		{
 			action Turn next Player take 2
 		}
@@ -215,7 +215,7 @@ Card SpadesAce {
 	property Suit: 1
 	property Number: 1
 	property Pest
-	rules {
+	sideeffects {
 		{
 			action Turn reverse	
 		}
@@ -236,7 +236,7 @@ Card DiamondsJack {
 	property Suit: 2
 	property Number: 11
 	property Pest
-	rules {
+	sideeffects {
 		{
 			action Turn next Rule remove SameSuitOrNumberOrJackOrJoker 
 		}
@@ -257,7 +257,7 @@ Card DiamondsEight {
 	property Suit: 2
 	property Number: 8
 	property Pest
-	rules {
+	sideeffects {
 		{
 			action Turn skip
 		}
@@ -268,7 +268,7 @@ Card DiamondsSeven {
 	property Suit: 2
 	property Number: 7
 	property Pest
-	rules {
+	sideeffects {
 		{
 			action Turn repeat
 		}
@@ -299,7 +299,7 @@ Card DiamondsTwo {
 	property Suit: 2
 	property Number: 2
 	property Pest
-	rules {
+	sideeffects {
 		{
 			action Turn next Player take 2
 		}
@@ -310,7 +310,7 @@ Card DiamondsAce {
 	property Suit: 2
 	property Number: 1
 	property Pest
-	rules {
+	sideeffects {
 		{
 			action Turn reverse	
 		}
@@ -331,7 +331,7 @@ Card ClubsJack {
 	property Suit: 3
 	property Number: 11
 	property Pest
-	rules {
+	sideeffects {
 		{
 			action Turn next Rule remove SameSuitOrNumberOrJackOrJoker 
 		}
@@ -352,7 +352,7 @@ Card ClubsEight {
 	property Suit: 3
 	property Number: 8
 	property Pest
-	rules {
+	sideeffects {
 		{
 			action Turn skip
 		}
@@ -363,7 +363,7 @@ Card ClubsSeven {
 	property Suit: 3
 	property Number: 7
 	property Pest
-	rules {
+	sideeffects {
 		{
 			action Turn repeat
 		}
@@ -394,7 +394,7 @@ Card ClubsTwo {
 	property Suit: 3
 	property Number: 2
 	property Pest
-	rules {
+	sideeffects {
 		{
 			action Turn next Player take 2
 		}
@@ -405,7 +405,7 @@ Card ClubsAce {
 	property Suit: 3
 	property Number: 1
 	property Pest
-	rules {
+	sideeffects {
 		{
 			action Turn reverse	
 		}
@@ -415,7 +415,7 @@ Card ClubsAce {
 Card JokerOne {
 	property Suit: 4 // Joker Suit
 	property Pest
-	rules {
+	sideeffects {
 		{
 			action Turn next Player take 5
 		}
@@ -425,7 +425,7 @@ Card JokerOne {
 Card JokerTwo {
 	property Suit: 4 // Joker Suit
 	property Pest
-	rules {
+	sideeffects {
 		{
 			action Turn next Player take 5
 		}
@@ -433,11 +433,13 @@ Card JokerTwo {
 }
 
 Setup {
-	players 3
+	Player "Alice" 
+		Deck { HeartsFive, HeartsQueen, JokerOne, SpadesSeven, ClubsEight, DiamondsTwo, SpadesFive }
+	Player "Bob"  
+		Deck { ClubsFour, SpadesThree, ClubsAce, SpadesQueen, DiamondsFour, HeartsJack, DiamondsKing }
+	Player "Carol" 
+		Deck { HeartsKing, SpadesEight, DiamondsJack, SpadesAce, DiamondsFive, ClubsSix, DiamondsNine }
 	cards {
-		Deck { HeartsFive, HeartsQueen, JokerOne, SpadesSeven, ClubsEight, DiamondsTwo, SpadesFive },
-		Deck { ClubsFour, SpadesThree, ClubsAce, SpadesQueen, DiamondsFour, HeartsJack, DiamondsKing },
-		Deck { HeartsKing, SpadesEight, DiamondsJack, SpadesAce, DiamondsFive, ClubsSix, DiamondsNine },
 		Table { ClubsKing },
 		DrawingPile { 
 			HeartsTen, HeartsNine, HeartsEight, HeartsSeven, HeartsSix, HeartsFour, HeartsThree, HeartsTwo, HeartsAce,
